@@ -1,0 +1,154 @@
+<!-- ~/~ begin <<blogs/creating_blogs_with_a_bash_script.md#template.html>>[init] -->
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <title>shellakajazzy.github.io - Creating Blogs With a Bash
+Script</title>
+        <style>
+            body { background-color: black; color: white; }
+            code { background-color: #001900; color: lightgreen; font-family: monospace, monospace, monospace; }
+            pre { background: #001900; overflow-x: auto; white-space: pre; padding: 1rem; }
+            .mainContent { margin-left: auto; margin-right: auto; width: 40%; color: white; }
+
+            .leftHeader { text-align: left; padding: 0; margin: 0; position: absolute; }
+            .rightHeader { text-align: right; }
+            .dates { color: darkgrey; font-size: 0.75em; }
+        </style>
+    </head>
+
+    <body>
+        <div class="mainContent">
+            <p class="leftHeader"><a href="https://shellakajazzy.github.io">shellakajazzy.github.io</a></p>
+            <p class="rightHeader"><a href="index.html">Home</a> | <a href="blogs.html">Blogs</a></p>
+
+                        <p class="dates">Published: July 29, 2026</p>
+            
+            
+            <p><a href="https://entangled.github.io/"><img
+            src="https://img.shields.io/badge/entangled-Use%20the%20source!-%2300aeff"
+            alt="Entangled badge" /></a></p>
+            <h1 id="creating-blogs-with-a-bash-script">Creating Blogs
+            With a Bash Script</h1>
+            <p>This is the first (of hopefullly many) blog posts on this
+            site. This also serves as a literate document containing the
+            code to generate the blog posts.</p>
+            <p>I will be using <a href="https://pandoc.org/">Pandoc</a>
+            to convert Markdown documents into HTML that can be put into
+            a template file.</p>
+            <h2 id="html-template">HTML Template</h2>
+            <p>This is the template file that will be used when
+            producing the pages of the site.</p>
+            <p><code>template.html</code>:</p>
+            <div class="sourceCode" id="cb1"
+            data-file="template.html"><pre
+            class="sourceCode html"><code class="sourceCode html"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;!DOCTYPE</span> HTML<span class="dt">&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">html</span><span class="dt">&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">head</span><span class="dt">&gt;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&lt;</span><span class="kw">title</span><span class="dt">&gt;</span>shellakajazzy.github.io - $title$<span class="dt">&lt;/</span><span class="kw">title</span><span class="dt">&gt;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&lt;</span><span class="kw">style</span><span class="dt">&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>            body { <span class="kw">background-color</span><span class="ch">:</span> <span class="cn">black</span><span class="op">;</span> <span class="kw">color</span><span class="ch">:</span> <span class="cn">white</span><span class="op">;</span> }</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>            code { <span class="kw">background-color</span><span class="ch">:</span> <span class="cn">#001900</span><span class="op">;</span> <span class="kw">color</span><span class="ch">:</span> <span class="cn">lightgreen</span><span class="op">;</span> <span class="kw">font-family</span><span class="ch">:</span> <span class="dv">monospace</span><span class="op">,</span> <span class="dv">monospace</span><span class="op">,</span> <span class="dv">monospace</span><span class="op">;</span> }</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>            pre { <span class="kw">background</span><span class="ch">:</span> <span class="cn">#001900</span><span class="op">;</span> <span class="kw">overflow-x</span><span class="ch">:</span> <span class="bu">auto</span><span class="op">;</span> <span class="kw">white-space</span><span class="ch">:</span> <span class="dv">pre</span><span class="op">;</span> <span class="kw">padding</span><span class="ch">:</span> <span class="dv">1</span><span class="dt">rem</span><span class="op">;</span> }</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>            <span class="fu">.mainContent</span> { <span class="kw">margin-left</span><span class="ch">:</span> <span class="bu">auto</span><span class="op">;</span> <span class="kw">margin-right</span><span class="ch">:</span> <span class="bu">auto</span><span class="op">;</span> <span class="kw">width</span><span class="ch">:</span> <span class="dv">40</span><span class="dt">%</span><span class="op">;</span> <span class="kw">color</span><span class="ch">:</span> <span class="cn">white</span><span class="op">;</span> }</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>            <span class="fu">.leftHeader</span> { <span class="kw">text-align</span><span class="ch">:</span> <span class="dv">left</span><span class="op">;</span> <span class="kw">padding</span><span class="ch">:</span> <span class="dv">0</span><span class="op">;</span> <span class="kw">margin</span><span class="ch">:</span> <span class="dv">0</span><span class="op">;</span> <span class="kw">position</span><span class="ch">:</span> <span class="dv">absolute</span><span class="op">;</span> }</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>            <span class="fu">.rightHeader</span> { <span class="kw">text-align</span><span class="ch">:</span> <span class="dv">right</span><span class="op">;</span> }</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>            <span class="fu">.dates</span> { <span class="kw">color</span><span class="ch">:</span> <span class="cn">darkgrey</span><span class="op">;</span> <span class="kw">font-size</span><span class="ch">:</span> <span class="dv">0.75</span><span class="dt">em</span><span class="op">;</span> }</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&lt;/</span><span class="kw">style</span><span class="dt">&gt;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;/</span><span class="kw">head</span><span class="dt">&gt;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> class</span><span class="op">=</span><span class="st">&quot;mainContent&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>            <span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> class</span><span class="op">=</span><span class="st">&quot;leftHeader&quot;</span><span class="dt">&gt;&lt;</span><span class="kw">a</span><span class="ot"> href</span><span class="op">=</span><span class="st">&quot;https://shellakajazzy.github.io&quot;</span><span class="dt">&gt;</span>shellakajazzy.github.io<span class="dt">&lt;/</span><span class="kw">a</span><span class="dt">&gt;&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>            <span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> class</span><span class="op">=</span><span class="st">&quot;rightHeader&quot;</span><span class="dt">&gt;&lt;</span><span class="kw">a</span><span class="ot"> href</span><span class="op">=</span><span class="st">&quot;index.html&quot;</span><span class="dt">&gt;</span>Home<span class="dt">&lt;/</span><span class="kw">a</span><span class="dt">&gt;</span> | <span class="dt">&lt;</span><span class="kw">a</span><span class="ot"> href</span><span class="op">=</span><span class="st">&quot;blogs.html&quot;</span><span class="dt">&gt;</span>Blogs<span class="dt">&lt;/</span><span class="kw">a</span><span class="dt">&gt;&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>            $if(published)$</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>            <span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> class</span><span class="op">=</span><span class="st">&quot;dates&quot;</span><span class="dt">&gt;</span>Published: $published$<span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>            $endif$</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>            $if(edited)$</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>            <span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> class</span><span class="op">=</span><span class="st">&quot;dates&quot;</span><span class="dt">&gt;</span>Last Edited: $edited$<span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>            $endif$</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>            $body$</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;/</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">html</span><span class="dt">&gt;</span></span></code></pre></div>
+            <p>This template is used to format the pages of my website
+            through Pandoc with the <code>--template</code> flag.</p>
+            <h2 id="blog-generation-script">Blog Generation Script</h2>
+            <p>This script is used to generate blog posts, starting off
+            with the homepage.</p>
+            <p><code>bloggen.bash</code>:</p>
+            <div class="sourceCode" id="bloggen"
+            data-file="bloggen.bash"><pre
+            class="sourceCode bash"><code class="sourceCode bash"><span id="bloggen-1"><a href="#bloggen-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create the homepage</span></span>
+<span id="bloggen-2"><a href="#bloggen-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pandoc</span> README.md <span class="at">--template</span><span class="op">=</span>template.html <span class="at">-o</span> <span class="st">&quot;./docs/index.html&quot;</span></span></code></pre></div>
+            <p>Next, each individual post stored in the
+            <code>./blogs/</code> directory is turned into an HTML
+            page:</p>
+            <div class="sourceCode" id="bloggen"><pre
+            class="sourceCode bash"><code class="sourceCode bash"><span id="bloggen-1"><a href="#bloggen-1" aria-hidden="true" tabindex="-1"></a><span class="co"># iterate through blog posts in ./blogs/, sort them by publication date</span></span>
+<span id="bloggen-2"><a href="#bloggen-2" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span> <span class="ot">-f</span> ./tosort.txt <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="fu">rm</span> tosort.txt</span>
+<span id="bloggen-3"><a href="#bloggen-3" aria-hidden="true" tabindex="-1"></a><span class="fu">touch</span> tosort.txt</span>
+<span id="bloggen-4"><a href="#bloggen-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="bloggen-5"><a href="#bloggen-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> file <span class="kw">in</span> ./blogs/<span class="pp">*</span>.md<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="bloggen-6"><a href="#bloggen-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">publish_epoch</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$(</span><span class="fu">date</span> <span class="at">-d</span> <span class="st">&quot;</span><span class="va">$(</span><span class="ex">pandoc</span> <span class="va">$file</span> <span class="at">--lua-filter</span><span class="op">=</span>getpubdate.lua <span class="kw">|</span> <span class="fu">head</span> <span class="at">-n</span> 1<span class="va">)</span><span class="st">&quot;</span> +%s<span class="va">)</span><span class="st">&quot;</span></span>
+<span id="bloggen-7"><a href="#bloggen-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">title</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$(</span><span class="ex">pandoc</span> <span class="va">$file</span> <span class="at">--lua-filter</span><span class="op">=</span>gettitle.lua <span class="kw">|</span> <span class="fu">head</span> <span class="at">-n</span> 1<span class="va">)</span><span class="st">&quot;</span></span>
+<span id="bloggen-8"><a href="#bloggen-8" aria-hidden="true" tabindex="-1"></a>    <span class="va">sanitized_title</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$(</span><span class="bu">echo</span> <span class="va">$title</span> <span class="kw">|</span> <span class="fu">tr</span> <span class="st">&#39;[:upper:]&#39;</span> <span class="st">&#39;[:lower:]&#39;</span> <span class="kw">|</span> <span class="fu">sed</span> <span class="st">&#39;s/ /_/g&#39;</span><span class="va">)</span><span class="st">&quot;</span></span>
+<span id="bloggen-9"><a href="#bloggen-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="bloggen-10"><a href="#bloggen-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># save the publish date and title to be sorted later</span></span>
+<span id="bloggen-11"><a href="#bloggen-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$publish_epoch</span><span class="st"> ./</span><span class="va">$sanitized_title</span><span class="st">.html </span><span class="va">$title</span><span class="st">&quot;</span> <span class="op">&gt;&gt;</span> tosort.txt</span>
+<span id="bloggen-12"><a href="#bloggen-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="bloggen-13"><a href="#bloggen-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># generate the html of the blog file</span></span>
+<span id="bloggen-14"><a href="#bloggen-14" aria-hidden="true" tabindex="-1"></a>    <span class="ex">pandoc</span> <span class="va">$file</span> <span class="at">--template</span><span class="op">=</span>template.html <span class="at">-o</span> <span class="st">&quot;./docs/</span><span class="va">$sanitized_title</span><span class="st">.html&quot;</span></span>
+<span id="bloggen-15"><a href="#bloggen-15" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+            <p>Then, the <a href="./blogs.html">blogs.html</a> file
+            needs to be generated:</p>
+            <div class="sourceCode" id="bloggen"><pre
+            class="sourceCode bash"><code class="sourceCode bash"><span id="bloggen-1"><a href="#bloggen-1" aria-hidden="true" tabindex="-1"></a><span class="co"># convert a sorted list of blog posts into points on the blogs.md page</span></span>
+<span id="bloggen-2"><a href="#bloggen-2" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span> <span class="ot">-f</span> ./blogs.md <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="fu">rm</span> blogs.md</span>
+<span id="bloggen-3"><a href="#bloggen-3" aria-hidden="true" tabindex="-1"></a><span class="bu">[</span> <span class="ot">-f</span> ./revblogs.md <span class="bu">]</span> <span class="kw">&amp;&amp;</span> <span class="fu">rm</span> revblogs.md</span>
+<span id="bloggen-4"><a href="#bloggen-4" aria-hidden="true" tabindex="-1"></a><span class="fu">touch</span> revblogs.md</span>
+<span id="bloggen-5"><a href="#bloggen-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="bloggen-6"><a href="#bloggen-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span> <span class="at">-nk</span> 1 tosort.txt <span class="kw">|</span> <span class="cf">while</span> <span class="bu">read</span> <span class="va">line</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="bloggen-7"><a href="#bloggen-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">blog_path</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$(</span><span class="bu">echo</span> <span class="va">$line</span> <span class="kw">|</span> <span class="fu">cut</span> <span class="at">-f</span> 2 <span class="at">-d</span> <span class="st">&#39; &#39;</span><span class="va">)</span><span class="st">&quot;</span></span>
+<span id="bloggen-8"><a href="#bloggen-8" aria-hidden="true" tabindex="-1"></a>    <span class="va">blog_title</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$(</span><span class="bu">echo</span> <span class="va">$line</span> <span class="kw">|</span> <span class="fu">cut</span> <span class="at">-f</span> 3- <span class="at">-d</span> <span class="st">&#39; &#39;</span><span class="va">)</span><span class="st">&quot;</span></span>
+<span id="bloggen-9"><a href="#bloggen-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">blog_pub_date</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$(</span><span class="fu">date</span> <span class="at">-d</span> <span class="st">&quot;@</span><span class="va">$(</span><span class="bu">echo</span> <span class="va">$line</span> <span class="kw">|</span> <span class="fu">cut</span> <span class="at">-f</span> 1 <span class="at">-d</span> <span class="st">&#39; &#39;</span><span class="va">)</span><span class="st">&quot;</span> +<span class="st">&quot;%b %d, %Y&quot;</span><span class="va">)</span><span class="st">&quot;</span></span>
+<span id="bloggen-10"><a href="#bloggen-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="bloggen-11"><a href="#bloggen-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;- </span><span class="va">$blog_pub_date</span><span class="st"> | [</span><span class="va">$blog_title</span><span class="st">](</span><span class="va">$blog_path</span><span class="st">)&quot;</span> <span class="op">&gt;&gt;</span> revblogs.md</span>
+<span id="bloggen-12"><a href="#bloggen-12" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="bloggen-13"><a href="#bloggen-13" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;# Blogs&quot;</span> <span class="op">&gt;&gt;</span> revblogs.md</span>
+<span id="bloggen-14"><a href="#bloggen-14" aria-hidden="true" tabindex="-1"></a><span class="fu">tac</span> revblogs.md <span class="op">&gt;&gt;</span> blogs.md</span>
+<span id="bloggen-15"><a href="#bloggen-15" aria-hidden="true" tabindex="-1"></a><span class="ex">pandoc</span> blogs.md <span class="at">--template</span><span class="op">=</span>template.html <span class="at">-o</span> ./docs/blogs.html</span></code></pre></div>
+            <p>Finally, the temporary files created are cleaned up:</p>
+            <div class="sourceCode" id="bloggen"><pre
+            class="sourceCode bash"><code class="sourceCode bash"><span id="bloggen-1"><a href="#bloggen-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cleanup temporary files</span></span>
+<span id="bloggen-2"><a href="#bloggen-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> tosort.txt</span>
+<span id="bloggen-3"><a href="#bloggen-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> revblogs.md</span></code></pre></div>
+            <h3 id="pandoc-lua-filters">Pandoc Lua Filters</h3>
+            <p>In order to actually extract the metadata from the blog
+            posts, some Lua filters are necessary for Pandoc, which
+            are:</p>
+            <p><code>gettitle.lua</code> - gets the title of the blog
+            post:</p>
+            <div class="sourceCode" id="cb2"
+            data-file="gettitle.lua"><pre
+            class="sourceCode lua"><code class="sourceCode lua"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> Meta<span class="op">(</span><span class="va">meta</span><span class="op">)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span><span class="op">(</span><span class="va">pandoc</span><span class="op">.</span><span class="va">utils</span><span class="op">.</span>stringify<span class="op">(</span><span class="va">meta</span><span class="op">.</span><span class="va">title</span><span class="op">))</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">meta</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div>
+            <p><code>getpubdate.lua</code> - gets the publication date
+            of the blog post:</p>
+            <div class="sourceCode" id="cb3"
+            data-file="getpubdate.lua"><pre
+            class="sourceCode lua"><code class="sourceCode lua"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> Meta<span class="op">(</span><span class="va">meta</span><span class="op">)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span><span class="op">(</span><span class="va">pandoc</span><span class="op">.</span><span class="va">utils</span><span class="op">.</span>stringify<span class="op">(</span><span class="va">meta</span><span class="op">.</span><span class="va">published</span><span class="op">))</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">meta</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div>
+        </div>
+    </body>
+</html>
+<!-- ~/~ end -->

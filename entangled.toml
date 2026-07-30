@@ -1,0 +1,6 @@
+version = "2.0"
+
+[[languages]]
+name = "HTML"
+identifiers = ["html"]
+comment = { open = "<!--", close = "-->" }

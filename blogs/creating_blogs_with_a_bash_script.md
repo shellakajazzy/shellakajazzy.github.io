@@ -29,6 +29,7 @@ This is the template file that will be used when producing the pages of the site
             a:link { color: #005EC8; }
             a:visited { color: #C400C5; }
             .dates { color: darkgrey; font-size: 0.75em; }
+            img { width: 50%; height: 50%; display: block; margin: 0 auto; }
 
             @media (width <= 960px) {
                 .mainContent { margin-left: auto; margin-right: auto; width: 95%; color: white; }
